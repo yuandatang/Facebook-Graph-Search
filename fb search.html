@@ -1,0 +1,455 @@
+ <!DOCTYPE html>
+<html lang="en">
+<style>
+
+/*
+    @keyframes myChange {
+  from {
+      height: 1000px;
+  } to {
+      height: 0;
+  }
+}
+#slide.ng-hide {
+  animation: 5s myChange;
+}
+*/
+    
+    .margin{
+        margin-top: auto;
+    }
+    
+    #li1:hover {
+    background-color:royalblue;
+}
+</style>
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+   window.fbAsyncInit = function() {
+     FB.init({
+       appId      : '1839637059587384',
+       xfbml      : true,
+       version    : 'v2.8'
+     });
+     FB.AppEvents.logPageView();
+   };
+
+   (function(d, s, id){
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {return;}
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+ </script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="http://connect.facebook.net/en_US/all.js"></script>
+    <script src="index.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"></script>
+    
+</head>
+<body>
+
+<div ng-app="myApp" ng-controller="usersCtrl"> 
+<div style="background:grey">
+<form class="navbar-form" role="search" style="background-color:grey;">
+    <div class="col-sm-4">
+    <b style="font-size: 150%;color: rgb(50,90,147)">FB Search</b>
+    </div>
+    
+    <!--input text box-->
+    <div class="col-sm-2">
+    <div class="form-group">
+        <input type="text" style="width: 150%;" class="form-control" placeholder="type something..." ng-model="keywords" data-toggle="tooltip" title="Please enter a keyword">
+    </div>
+    </div>
+    
+    <div class="col-sm-4" >
+    <button type="submit" class="btn btn-primary" name="search_submit" ng-click="fresh()"><span class="glyphicon glyphicon-search" ></span></button>
+    </div>
+    
+<!--    clear button-->
+    <div class="col-sm-2">
+    <button type="submit" class="btn btn-default" ng-click="clear()">Clear</button>
+    </div>
+    
+</form>    
+</div>
+    
+
+    
+<div class="tab-content current">
+    <ul class="nav nav-tabs nav-justified tab-pane in active">
+        <li role="presentation" class="active" ng-click="isUsers()"><a id="li1" data-toggle="tab" href="#users"><span id="c1">Users</span></a></li>
+        <li role="presentation" ng-click="isPages()"><a id="li2" data-toggle="tab" href="#pages"><span id="c2">Pages</span></a></li>
+        <li role="presentation" ng-click="isEvents()"><a id="li3" data-toggle="tab" href="#events"><span id="c3">Events</span></a></li>
+        <li role="presentation" ng-click="isPlaces()"><a id="li4" data-toggle="tab" href="#places"><span id="c4">Places</span></a></li>
+        <li role="presentation" ng-click="isGroups()"><a id="li5" data-toggle="tab" href="#groups"><span id="c5">Groups</span></a></li>
+        <li role="presentation" ng-click="isFavourites()"><a id="li6" data-toggle="tab" href="#favourites"><span id="c6">Favourites</span></a></li>
+    </ul>
+</div>
+    
+    
+<div id="mainBar" hidden>
+      <div class="panel-body">
+      <br><br><br><br><br>
+          <div class="progress">
+    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
+    </div>
+      </div>
+  </div>
+</div>
+
+    
+
+<div id="myCarousel" class="carousel slide" data-ride="carousel">
+<div class="tab-content" >
+  <div id="slide" >
+    <div id="users" class="tab-pane fade in active"> 
+      <table class="table" ng-hide="users==NULL">
+            <tr>
+                <th>#</th>
+                <th>Profile photo</th>
+                <th>Name</th>
+                <th>Favourite</th>
+                <th>Details</th>
+            </tr>
+            <tr ng-repeat="user in users">
+                <th>{{ $index + 1 }}</th>
+                <th><img src="{{user.picture.data.url}}" style="width:40px;height:40px"></th>
+                <th>{{user.name}}</th>
+                <th>
+                    <button type="button" class="btn btn-default" ng-hide="checkFav(user.id)" ng-click="deleteFav(user.id)">
+                    <span class="glyphicon glyphicon-star" style='color:yellow;'></span>
+                    </button>
+                    <button type="button" class="btn btn-default" ng-hide="!checkFav(user.id)" ng-click="addFav($index,user.id)">
+                    <span class="glyphicon glyphicon-star-empty"></span>
+                    </button>
+                </th>
+                <th>
+                    <button type="button" class="btn btn-default" ng-click="isDetail($index)" data-target="#myCarousel"  data-slide="next">
+                    <span class="glyphicon glyphicon-menu-right" ></span>
+                    </button>
+                </th>
+            </tr>
+      </table>
+    </div>
+      <div id="pages" class="tab-pane fade">
+      <table class="table" ng-hide="pages==NULL">
+            <tr>
+                <th>#</th>
+                <th>Profile photo</th>
+                <th>Name</th>
+                <th>Favourite</th>
+                <th>Details</th>
+            </tr>
+            <tr ng-repeat="page in pages">
+                <th>{{ $index + 1 }}</th>
+                <th><img src="{{page.picture.data.url}}" style="width:40px;height:40px"></th>
+                <th>{{page.name}}</th>
+                <th>
+                    <button type="button" class="btn btn-default" ng-hide="checkFav(page.id)" ng-click="deleteFav(page.id)">
+                    <span class="glyphicon glyphicon-star" style='color:yellow;'></span>
+                    </button>
+                    <button type="button" class="btn btn-default" ng-hide="!checkFav(page.id)" ng-click="addFav($index,page.id)">
+                    <span class="glyphicon glyphicon-star-empty"></span>
+                    </button>
+                </th>
+                <th>
+                    <button type="button" class="btn btn-default" ng-click="isDetail($index)" data-target="#myCarousel"  data-slide="next">
+                    <span class="glyphicon glyphicon-menu-right" ></span>
+                    </button>
+                </th>
+            </tr>
+      </table>
+    </div>
+
+    <div id="events" class="tab-pane fade">
+        <table class="table" ng-hide="events==NULL">
+            <tr>
+                <th>#</th>
+                <th>Profile photo</th>
+                <th>Name</th>
+                <th>Favourite</th>
+                <th>Details</th>
+            </tr>
+            <tr ng-repeat="event in events">
+                <th>{{ $index + 1 }}</th>
+                <th><img src="{{event.picture.data.url}}" style="width:40px;height:40px"></th>
+                <th>{{event.name}}</th>
+                <th>
+                    <button type="button" class="btn btn-default" ng-hide="checkFav(event.id)" ng-click="deleteFav(event.id)">
+                    <span class="glyphicon glyphicon-star" style='color:yellow;'></span>
+                    </button>
+                    <button type="button" class="btn btn-default" ng-hide="!checkFav(event.id)" ng-click="addFav($index,event.id)">
+                    <span class="glyphicon glyphicon-star-empty"></span>
+                    </button>
+                </th>
+                <th>
+                    <button type="button" class="btn btn-default" ng-click="isDetail($index)" data-target="#myCarousel"  data-slide="next">
+                    <span class="glyphicon glyphicon-menu-right" ></span>
+                    </button>
+                </th>
+            </tr>
+      </table>
+    </div>
+    <div id="places" class="tab-pane fade">
+      <table class="table" ng-hide="places==NULL">
+            <tr>
+                <th>#</th>
+                <th>Profile photo</th>
+                <th>Name</th>
+                <th>Favourite</th>
+                <th>Details</th>
+            </tr>
+            <tr ng-repeat="place in places">
+                <th>{{ $index + 1 }}</th>
+                <th><img src="{{place.picture.data.url}}" style="width:40px;height:40px"></th>
+                <th>{{place.name}}</th>
+                <th>
+                    <button type="button" class="btn btn-default" ng-hide="checkFav(place.id)" ng-click="deleteFav(place.id)">
+                    <span class="glyphicon glyphicon-star" style='color:yellow;'></span>
+                    </button>
+                    <button type="button" class="btn btn-default" ng-hide="!checkFav(place.id)" ng-click="addFav($index,place.id)">
+                    <span class="glyphicon glyphicon-star-empty"></span>
+                    </button>
+                </th>
+                <th>
+                    <button type="button" class="btn btn-default" ng-click="isDetail($index)" data-target="#myCarousel"  data-slide="next">
+                    <span class="glyphicon glyphicon-menu-right" ></span>
+                    </button>
+                </th>
+            </tr>
+      </table>
+    </div>
+    <div id="groups" class="tab-pane fade">
+      <table class="table" ng-hide="groups==NULL">
+            <tr>
+                <th>#</th>
+                <th>Profile photo</th>
+                <th>Name</th>
+                <th>Favourite</th>
+                <th>Details</th>
+            </tr>
+            <tr ng-repeat="group in groups">
+                <th>{{ $index + 1 }}</th>
+                <th><img src="{{group.picture.data.url}}" style="width:40px;height:40px"></th>
+                <th>{{group.name}}</th>
+                <th>
+                    <button type="button" class="btn btn-default" ng-hide="checkFav(group.id)" ng-click="deleteFav(group.id)">
+                    <span class="glyphicon glyphicon-star" style='color:yellow;'></span>
+                    </button>
+                    <button type="button" class="btn btn-default" ng-hide="!checkFav(group.id)" ng-click="addFav($index,group.id)">
+                    <span class="glyphicon glyphicon-star-empty"></span>
+                    </button>
+                </th>
+                <th>
+                    <button type="button" class="btn btn-default" ng-click="isDetail($index)" data-target="#myCarousel"  data-slide="next">
+                    <span class="glyphicon glyphicon-menu-right" ></span>
+                    </button>
+                </th>
+            </tr>
+      </table>
+    </div>
+      
+<!-- favourite tag -->
+    <div id="favourites" class="tab-pane fade">
+        <table class="table" ng-hide="favourites==null">
+            <tr>
+                <th>#</th>
+                <th>Profile photo</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Favourite</th>
+                <th>Details</th>
+            </tr>
+        <tr ng-repeat="favourite in favourites" >
+                <th>{{ $index + 1 }}</th>
+                <th><img src="{{favourite.picture}}" style="width:40px;height:40px"></th>
+                <th>{{favourite.name}}</th>
+                <th>{{favourite.type}}</th>
+                <th><button type="button" class="btn btn-default" ng-click="deleteFav2(favourite.id)">
+                    <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+                </th>
+                <th>
+                    <button type="button" class="btn btn-default" ng-click="isFavDetail(favourite.id)">
+                    <span class="glyphicon glyphicon-menu-right"> </span>
+                    </button>
+                </th>
+        </tr>
+        </table>
+    </div>
+    
+    <!-- back button and two other features-->
+<div ng-hide="hideDetail==true">
+    <div class="col-sm-2"> 
+        <button type="button" class="btn btn-default" ng-click="backFromDetail()" data-target="#myCarousel"  data-slide="next"><span class="glyphicon glyphicon-chevron-left" ></span>BACK</button>
+    </div>
+    
+    <div class="col-sm-8">
+        <div style="float:right">
+            <button type="button" class="btn btn-default" ng-hide="checkFav(ident)" ng-click="deleteFav(ident)">
+                    <span class="glyphicon glyphicon-star" style='color:yellow;'></span>
+                    </button>
+                    <button type="button" class="btn btn-default" ng-hide="!checkFav(ident)" ng-click="addFav($identNum,ident)">
+                    <span class="glyphicon glyphicon-star-empty"></span>
+            </button>
+        </div>
+    </div>
+    
+    <div class="col-sm-1">
+            <button type="button" class="btn btn-default" style="float:right" ng-click="facebook()">
+                <image src="http://cs-server.usc.edu:45678/hw/hw8/images/facebook.png" style="width:23px;height:23px;">
+                </image>
+            </button>
+    </div>
+    
+</div>
+   
+      
+<!-- albums -->
+<div ng-hide="hideDetail==true">
+  <div class="col-sm-6">
+      <div class="panel-group">
+      <div class="panel panel-default">
+          <div class="panel-heading">Albums</div>
+          
+          
+          <div class= "minBar" hidden>
+                <div class="progress">
+                  <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+                  </div>
+                </div>
+          </div>
+          <div class="double">
+      <div class="panel-body">
+    <div ng-if="albums==null" class="alert alert-warning">No data found</div>
+    <div ng-if="albums!=null" class="panel panel-default">
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-parent="#accordion" href='#toggle1'>{{albums.data[0].name}}</a>
+                    </h4>
+                  </div>
+                  <div id=toggle1 class="panel-collapse collapse">
+                       <div class="panel-group"><img ng-src="	https://graph.facebook.com/v2.8/{{albums.data[0].photos.data[0].id}}/picture?access_token=EAACRpkHZCDQABAIAPCSlZA7N16qhKTMkjAKD96BCKNNiBOVjxMKYsJ0Jl6fxI3cMwBSontcHmBfvH471ZCsGzgXsT4jNUsJjhcUdVboEz8vKEK6zpSLZAMTbzK4sLeaOrVqZAOu3FxBeQNB61iwraQcnRZCcRLFVYZD" width="100%"></div>
+                        <div class="panel-group"><img ng-src="	https://graph.facebook.com/v2.8/{{albums.data[0].photos.data[1].id}}/picture?access_token=EAACRpkHZCDQABAIAPCSlZA7N16qhKTMkjAKD96BCKNNiBOVjxMKYsJ0Jl6fxI3cMwBSontcHmBfvH471ZCsGzgXsT4jNUsJjhcUdVboEz8vKEK6zpSLZAMTbzK4sLeaOrVqZAOu3FxBeQNB61iwraQcnRZCcRLFVYZD" width="100%"></div>
+                  </div>
+                </div>
+                
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-parent="#accordion" href='#toggle2'>{{albums.data[1].name}}</a>
+                    </h4>
+                  </div>
+                  <div id=toggle2 class="panel-collapse collapse">
+                    <div class="panel-group"><img ng-src="	https://graph.facebook.com/v2.8/{{albums.data[1].photos.data[0].id}}/picture?access_token=EAACRpkHZCDQABAIAPCSlZA7N16qhKTMkjAKD96BCKNNiBOVjxMKYsJ0Jl6fxI3cMwBSontcHmBfvH471ZCsGzgXsT4jNUsJjhcUdVboEz8vKEK6zpSLZAMTbzK4sLeaOrVqZAOu3FxBeQNB61iwraQcnRZCcRLFVYZD" width="100%"></div>
+                        <div class="panel-group"><img ng-src="	https://graph.facebook.com/v2.8/{{albums.data[1].photos.data[1].id}}/picture?access_token=EAACRpkHZCDQABAIAPCSlZA7N16qhKTMkjAKD96BCKNNiBOVjxMKYsJ0Jl6fxI3cMwBSontcHmBfvH471ZCsGzgXsT4jNUsJjhcUdVboEz8vKEK6zpSLZAMTbzK4sLeaOrVqZAOu3FxBeQNB61iwraQcnRZCcRLFVYZD" width="100%"></div>
+                  </div>
+                </div>
+                
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-parent="#accordion" href='#toggle3'>{{albums.data[2].name}}</a>
+                    </h4>
+                  </div>
+                  <div id=toggle3 class="panel-collapse collapse">
+                    <div class="panel-group"><img ng-src="	https://graph.facebook.com/v2.8/{{albums.data[2].photos.data[0].id}}/picture?access_token=EAACRpkHZCDQABAIAPCSlZA7N16qhKTMkjAKD96BCKNNiBOVjxMKYsJ0Jl6fxI3cMwBSontcHmBfvH471ZCsGzgXsT4jNUsJjhcUdVboEz8vKEK6zpSLZAMTbzK4sLeaOrVqZAOu3FxBeQNB61iwraQcnRZCcRLFVYZD" width="100%"></div>
+                        <div class="panel-group"><img ng-src="	https://graph.facebook.com/v2.8/{{albums.data[2].photos.data[1].id}}/picture?access_token=EAACRpkHZCDQABAIAPCSlZA7N16qhKTMkjAKD96BCKNNiBOVjxMKYsJ0Jl6fxI3cMwBSontcHmBfvH471ZCsGzgXsT4jNUsJjhcUdVboEz8vKEK6zpSLZAMTbzK4sLeaOrVqZAOu3FxBeQNB61iwraQcnRZCcRLFVYZD" width="100%"></div>
+                  </div>
+                </div>
+                
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-parent="#accordion" href='#toggle4'>{{albums.data[3].name}}</a>
+                    </h4>
+                  </div>
+                  <div id=toggle4 class="panel-collapse collapse">
+                    <div class="panel-group"><img ng-src="	https://graph.facebook.com/v2.8/{{albums.data[3].photos.data[0].id}}/picture?access_token=EAACRpkHZCDQABAIAPCSlZA7N16qhKTMkjAKD96BCKNNiBOVjxMKYsJ0Jl6fxI3cMwBSontcHmBfvH471ZCsGzgXsT4jNUsJjhcUdVboEz8vKEK6zpSLZAMTbzK4sLeaOrVqZAOu3FxBeQNB61iwraQcnRZCcRLFVYZD" width="100%"></div>
+                        <div class="panel-group"><img ng-src="	https://graph.facebook.com/v2.8/{{albums.data[3].photos.data[1].id}}/picture?access_token=EAACRpkHZCDQABAIAPCSlZA7N16qhKTMkjAKD96BCKNNiBOVjxMKYsJ0Jl6fxI3cMwBSontcHmBfvH471ZCsGzgXsT4jNUsJjhcUdVboEz8vKEK6zpSLZAMTbzK4sLeaOrVqZAOu3FxBeQNB61iwraQcnRZCcRLFVYZD" width="100%"></div>
+                  </div>
+                </div>
+                
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-parent="#accordion"href='#toggle5'>{{albums.data[4].name}}</a>
+                    </h4>
+                  </div>
+                  <div id=toggle5 class="panel-collapse collapse">
+                    <div class="panel-group"><img ng-src="	https://graph.facebook.com/v2.8/{{albums.data[4].photos.data[0].id}}/picture?access_token=EAACRpkHZCDQABAIAPCSlZA7N16qhKTMkjAKD96BCKNNiBOVjxMKYsJ0Jl6fxI3cMwBSontcHmBfvH471ZCsGzgXsT4jNUsJjhcUdVboEz8vKEK6zpSLZAMTbzK4sLeaOrVqZAOu3FxBeQNB61iwraQcnRZCcRLFVYZD" width="100%"></div>
+                        <div class="panel-group"><img ng-src="	https://graph.facebook.com/v2.8/{{albums.data[4].photos.data[1].id}}/picture?access_token=EAACRpkHZCDQABAIAPCSlZA7N16qhKTMkjAKD96BCKNNiBOVjxMKYsJ0Jl6fxI3cMwBSontcHmBfvH471ZCsGzgXsT4jNUsJjhcUdVboEz8vKEK6zpSLZAMTbzK4sLeaOrVqZAOu3FxBeQNB61iwraQcnRZCcRLFVYZD" width="100%"></div>
+                  </div>
+                </div>
+              </div>
+  </div>
+    </div>
+          </div>
+    </div>
+      </div>
+    </div>
+      
+<!-- posts -->
+    <div class="col-sm-6">
+      <div class="panel-group">
+      <div class="panel panel-default">
+          <div class="panel-heading">Posts</div>
+      <div class="panel-body">
+          
+          <div class= "minBar" hidden>
+                <div class="progress">
+                  <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+                  </div>
+                </div>
+          </div>
+          
+          <div class="double">
+    <div ng-if="albums==null" class="alert alert-warning">No data found</div>
+    <div ng-if="albums!=null" class="panel panel-default">
+      <div ng-repeat="post in posts.data">
+          <div class="margin">
+          <div class="panel panel-default">
+              <div class="panel body">
+                  <div style='margin-auto;'>
+                  <img src={{image}} style="width:33px;height:33px">
+                  <span ><b>{{name}}</b></span><br>
+                      <span >{{changeDateForm(post.created_time)}}</span></div>
+                  
+            <div>{{post.message}}</div>
+            </div>
+            </div>
+        </div>
+        </div>
+          </div>
+          </div>
+  </div>
+    </div>
+    </div>
+      </div>
+          
+</div>    
+</div>
+    </div>
+
+<div ng-if="hidePager!=true">
+<ul class="pager">
+    <li><a ng-click="toPrev()" ng-if="pageNum!=1">Previous</a></li>
+    <li><a id="nextButton" ng-click="toNext()" ng-if="tempData==null">Next</a></li>
+  </ul>
+</div>
+  
+    </div>
+    </div>
+</body>
+</html>
